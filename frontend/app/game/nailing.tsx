@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import * as Haptics from "expo-haptics";
 
 import { COLORS, RADIUS } from "@/src/theme";
 import { getPlayerName } from "@/src/player";
@@ -38,7 +39,15 @@ export default function NailingWebGame() {
   const onMessage = (e: WebViewMessageEvent) => {
     try {
       const d = JSON.parse(e.nativeEvent.data);
-      if (d && d.type === "nailing_score") submit(d.taps, d.stars);
+      if (d && d.type === "nailing_score") {
+        submit(d.taps, d.stars);
+        // vibrate after every completed set
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        setTimeout(
+          () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {}),
+          130,
+        );
+      }
     } catch {
       /* ignore non-JSON messages */
     }

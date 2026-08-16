@@ -90,16 +90,25 @@ export default function Home() {
 
       {/* Top HUD */}
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
-        <Pressable
-          testID="home-settings-button"
-          style={styles.iconBtn}
-          onPress={() => {
-            haptic("tap", settings.haptics);
-            setShowSettings(true);
-          }}
-        >
-          <Ionicons name="settings-sharp" size={22} color={colors.onSurfaceInverse} />
-        </Pressable>
+        <View style={{ flexDirection: "row", gap: spacing.sm }}>
+          <Pressable
+            testID="hub-button"
+            style={styles.iconBtn}
+            onPress={() => router.replace("/")}
+          >
+            <Ionicons name="grid" size={20} color={colors.onSurfaceInverse} />
+          </Pressable>
+          <Pressable
+            testID="home-settings-button"
+            style={styles.iconBtn}
+            onPress={() => {
+              haptic("tap", settings.haptics);
+              setShowSettings(true);
+            }}
+          >
+            <Ionicons name="settings-sharp" size={22} color={colors.onSurfaceInverse} />
+          </Pressable>
+        </View>
         <View testID="home-lives-pill" style={styles.coinPill}>
           <Ionicons name="heart" size={16} color={colors.error} />
           <Text style={styles.coinPillText}>{lives}</Text>

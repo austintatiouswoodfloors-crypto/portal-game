@@ -38,9 +38,17 @@ export default function Title() {
       {/* soft sunburst circle */}
       <View pointerEvents="none" style={styles.sun} />
 
+      <Pressable
+        testID="hub-button"
+        onPress={() => router.replace("/")}
+        style={[styles.hubBtn, { top: insets.top + 12 }]}
+      >
+        <Ionicons name="chevron-back" size={22} color={COLORS.ink} />
+      </Pressable>
+
       <View style={[styles.content, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 28 }]}>
         <Animated.View entering={FadeIn.duration(500)} style={styles.header}>
-          <Text style={styles.kicker}>CLOBA ARCADE</Text>
+          <Text style={styles.kicker}>ARCADE</Text>
           <Text style={styles.title}>Plum Peach</Text>
           <Text style={styles.subtitle}>FRUIT REACTION GAME</Text>
         </Animated.View>
@@ -106,6 +114,22 @@ export default function Title() {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  hubBtn: {
+    position: "absolute",
+    left: 16,
+    zIndex: 10,
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
   sun: {
     position: "absolute",
     top: -120,

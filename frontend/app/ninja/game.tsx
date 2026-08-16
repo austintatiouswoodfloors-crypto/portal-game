@@ -273,7 +273,7 @@ export default function Game() {
   const goHome = () => {
     haptic("tap", settings.haptics);
     runningRef.current = false;
-    router.replace("/ninja");
+    router.replace("/");
   };
 
   const s = stateRef.current;

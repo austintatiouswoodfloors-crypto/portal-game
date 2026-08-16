@@ -12,6 +12,8 @@ import { FruitToken } from "@/src/games/plum/FruitToken";
 import { FallingField, FieldHandle, TURBO_SCORE } from "@/src/games/plum/FallingField";
 import { storage } from "@/src/utils/storage";
 import { submitScore } from "@/src/games/plum/api";
+import { getPlayerName } from "@/src/player";
+import { useAudioPlayer } from "expo-audio";
 import { BEST_KEY } from "./index";
 
 export default function Game() {
@@ -30,14 +32,22 @@ export default function Game() {
   const fieldRef = useRef<FieldHandle>(null);
   const scoreRef = useRef(0);
   const bestRef = useRef(0);
+  const sfxCoin = useAudioPlayer(require("@/assets/audio/coin.wav"));
+  const sfxDie = useAudioPlayer(require("@/assets/audio/die.wav"));
 
   const handleScore = useCallback((s: number) => {
     scoreRef.current = s;
     setScore(s);
+    try {
+      sfxCoin.seekTo(0);
+      sfxCoin.play();
+    } catch {
+      /* no-op */
+    }
     if (s === TURBO_SCORE) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
     }
-  }, []);
+  }, [sfxCoin]);
 
   const handleGameOver = useCallback((finalScore: number) => {
     const newBest = finalScore > bestRef.current;
@@ -48,7 +58,23 @@ export default function Game() {
       storage.setItem(BEST_KEY, finalScore);
     }
     setPhase("over");
-  }, []);
+    try {
+      sfxDie.seekTo(0);
+      sfxDie.play();
+    } catch {
+      /* no-op */
+    }
+    // auto-save to the ranking using the saved player name
+    setSubmitState("sending");
+    (async () => {
+      try {
+        await submitScore(await getPlayerName(), finalScore);
+        setSubmitState("done");
+      } catch {
+        setSubmitState("idle");
+      }
+    })();
+  }, [sfxDie]);
 
   const restart = useCallback(() => {
     setIsNewBest(false);
@@ -81,7 +107,7 @@ export default function Game() {
     <LinearGradient colors={[COLORS.bgTop, COLORS.bgBottom]} style={styles.fill} testID="game-screen">
       {/* top bar */}
       <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-        <Pressable testID="home-button" onPress={() => router.replace("/plum")} style={styles.iconBtn}>
+        <Pressable testID="home-button" onPress={() => router.replace("/")} style={styles.iconBtn}>
           <Ionicons name="home" size={22} color={COLORS.ink} />
         </Pressable>
         <View style={styles.scoreWrap}>
@@ -175,7 +201,7 @@ export default function Game() {
               <View style={styles.overRow}>
                 <Pressable
                   testID="overlay-home-button"
-                  onPress={() => router.replace("/plum")}
+                  onPress={() => router.replace("/")}
                   style={({ pressed }) => [styles.overSmall, pressed && styles.pressed]}
                 >
                   <Ionicons name="home-outline" size={18} color={COLORS.ink} />

@@ -30,7 +30,11 @@ All three games feed the hub Ranking tab (per-game boards):
 - [x] Nailing Master bundled in and self-contained (offline, served from app origin).
 - [x] Plum Peach & TinyNinja Jumper imported as real Expo source.
 - [x] Unified per-game Ranking populated by all three games.
+- [x] Return-to-hub button on all 3 games; removed CLOBA branding (Plum kicker -> "ARCADE", Nailing footer).
+- [x] Plum: auto-saves score to ranking on game over + correct/wrong sound effects (expo-audio).
+- [x] Nailing: device vibrates after every completed set (RN message bridge).
 
-## Notes / Backlog
-- If Nailing Master is updated upstream, re-run: build Hammerexp -> copy build to public/nailing/.
-- Optional: single cross-game "overall" ranking (currently 3 per-game boards).
+## Remaining requested (backlog)
+- Ninja: platform variety — sometimes 2x/3x gaps forcing a jump to an upper level; lower level replaced by upper (not overlapping).
+- Ninja: separate Music on/off from SFX; add music layers; enemy variety; coin combo; distinct collectible star vs life-progress star; optional jump-arc guide.
+- Nailing: "tougher nails" difficulty setting (edit web source GAME config + rebuild).
