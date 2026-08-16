@@ -1,0 +1,174 @@
+{
+  "app_name": "CLOBA Arcade",
+  "personality": "4 Tactile / Playful LIGHT",
+  "personality_one_liner": "A chunky, energetic, and touchable arcade hub that ties together distinct mini-games under one delightfully tactile roof.",
+  "color": {
+    "surface": "#FFF9F0",
+    "onSurface": "#181A1F",
+    "surfaceSecondary": "#FFFFFF",
+    "onSurfaceSecondary": "#181A1F",
+    "surfaceTertiary": "#F2E8DB",
+    "onSurfaceTertiary": "#181A1F",
+    "surfaceInverse": "#181A1F",
+    "onSurfaceInverse": "#FFF9F0",
+    "brand": "#FFD166",
+    "brandPrimary": "#FFD166",
+    "onBrandPrimary": "#181A1F",
+    "brandSecondary": "#EF476F",
+    "onBrandSecondary": "#FFFFFF",
+    "brandTertiary": "#FFEBC2",
+    "onBrandTertiary": "#181A1F",
+    "success": "#06D6A0",
+    "onSuccess": "#000000",
+    "warning": "#FFD166",
+    "onWarning": "#181A1F",
+    "error": "#EF476F",
+    "onError": "#FFFFFF",
+    "border": "#E5D8C5",
+    "borderStrong": "#181A1F",
+    "divider": "#E5D8C5",
+    "nailingMasterBrand": "#87CEFA",
+    "onNailingMaster": "#181A1F",
+    "plumPeachBrand": "#FFB5A7",
+    "onPlumPeach": "#181A1F",
+    "ninjaJumperBrand": "#2D6A4F",
+    "onNinjaJumper": "#FFFFFF"
+  },
+  "typography": {
+    "displayFontFamily": "Fredoka",
+    "textFontFamily": "Nunito",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous padding around chunky components; use spacing to group logical elements without borders where possible.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 8,
+    "md": 16,
+    "lg": 24,
+    "pill": 999
+  },
+  "shadow_tier": "2",
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "true",
+    "do's": [
+      "Use over the hero game carousel",
+      "Use on bottom tabs to keep the games visible underneath"
+    ],
+    "dont's": [
+      "Don't use on game cards in the grid",
+      "Don't use on buttons - keep buttons solid and chunky"
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "HubHome",
+      "purpose": "A central grid and carousel to discover and launch the 3 mini-games instantly.",
+      "states": {
+        "loading": "Chunky spinner centered on #FFF9F0 background.",
+        "empty": "Lottie/Illustration of an unplugged arcade machine.",
+        "error": "Error message with a big chunky 'Retry' pill button."
+      },
+      "layout": "Use a featured horizontal carousel at the top for the 'Game of the Day' with a glass title bar. Below it, a 2-column grid or large vertical list of 'All Games'. Each game card adapts its background tint to its specific theme color."
+    },
+    {
+      "name": "GameStart",
+      "purpose": "The lobby for an individual game showing best score, ranking, and a massive PLAY button.",
+      "states": {
+        "loading": "Skeleton of the score card.",
+        "empty": "No previous scores -> 'Play your first game!'",
+        "error": "Failed to load leaderboard -> Retry."
+      },
+      "layout": "Full-bleed background using the game's specific brand color (light blue, peach, or bamboo green) with a top-to-bottom gradient scrim. Large title, a centralized high-score module, and a sticky bottom CTA (PLAY) inside a glass container."
+    },
+    {
+      "name": "InGameHUD",
+      "purpose": "Heads-up display overlaid on the game canvas.",
+      "states": {
+        "loading": "N/A",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Minimalist absolute-positioned floating pills at the top edge (Score, Lives) and a pause icon button. Avoid heavy backgrounds to maximize gameplay visibility."
+    },
+    {
+      "name": "GameOverOverlay",
+      "purpose": "Immediate feedback upon dying/failing, showing score and quick retry.",
+      "states": {
+        "loading": "N/A",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "A dimmed glassmorphism backdrop over the frozen game state. A chunky modal in the center displaying 'Game Over', final score, 'New High Score' badge, and two massive side-by-side buttons: Home and Retry."
+    },
+    {
+      "name": "Leaderboard",
+      "purpose": "Global ranking tab for all games.",
+      "states": {
+        "loading": "List skeleton.",
+        "empty": "Illustration of an empty podium.",
+        "error": "Failed to fetch -> Retry."
+      },
+      "layout": "Top tab bar to toggle between the 3 games. A vertical list of players (Rank, Avatar, Score). The top 3 rows are emphasized with larger height and gold/silver/bronze tints."
+    }
+  ],
+  "images": {
+    "hub_mascot": {
+      "url": "https://images.unsplash.com/photo-1781887609371-05742497a40d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxhcmNhZGUlMjBtYWNoaW5lJTIwcGl4ZWwlMjBwbGF5fGVufDB8fHx8MTc4Njg1MjY0NHww&ixlib=rb-4.1.0&q=85",
+      "alt": "Pixel character at a keyboard"
+    },
+    "game_nailing": {
+      "url": "https://images.unsplash.com/photo-1601571268456-008be5537067?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NjV8MHwxfHNlYXJjaHwxfHxoYW1tZXIlMjBoaXR0aW5nJTIwbmFpbCUyMHdvb2R8ZW58MHx8fHwxNzg2ODUyNjQzfDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Hammer hitting a nail into wood"
+    },
+    "game_plum": {
+      "url": "https://images.unsplash.com/photo-1767765562964-f1e750934d0f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHxwZWFjaCUyMGZydWl0JTIwY3V0ZSUyMGNhcnRvb258ZW58MHx8fHwxNzg2ODUyNjQzfDA&ixlib=rb-4.1.0&q=85",
+      "alt": "A single peach on a warm background"
+    },
+    "game_ninja": {
+      "url": "https://images.unsplash.com/photo-1586061968253-7bf5724aab7b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHx0aW55JTIwbmluamElMjBqdW1waW5nJTIwYmFtYm9vJTIwZm9yZXN0fGVufDB8fHx8MTc4Njg1MjY0NHww&ixlib=rb-4.1.0&q=85",
+      "alt": "Dense green bamboo forest"
+    },
+    "empty_state_arcade": {
+      "url": "https://images.unsplash.com/photo-1781899374876-bc065a5a2012?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTF8MHwxfHNlYXJjaHwxfHxlbXB0eSUyMHJldHJvJTIwYXJjYWRlJTIwcm9vbXxlbnwwfHx8fDE3ODY4NTI2NDR8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Empty retro arcade room"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Adopt the 4 Tactile / Playful LIGHT personality. Buttons should be chunky, deeply rounded (pill or lg radius), and highly pressable to feel like arcade buttons.",
+    "The user explicitly requested color themes for the 3 mini-games. Blue is specifically ALLOWED here because the prompt asks for 'Nailing Master = light blue sky/clean'. Use the custom color tokens (nailingMasterBrand, plumPeachBrand, ninjaJumperBrand) for game-specific accents, backgrounds, and Start Screen theming.",
+    "When rendering Game cards on the HubHome screen, tint the card background to the respective game's brand color, maintaining strong contrast with the text/icons.",
+    "For the Start Screen of any game, ensure the hero image is covered by a vertical gradient scrim (transparent to surfaceInverse) so text stays legible.",
+    "In-game HUDs must use absolute positioning with high contrast pills, avoiding heavy solid bars that block gameplay.",
+    "The Game Over overlay should be a centralized, playful Modal centered on a glassmorphic background that lets the frozen game peek through. Use oversized 'Retry' buttons.",
+    "Implement haptic feedback heavily. 'Bumps' when navigating, 'success' pops on Play button, and quick tactile ticks when opening the Game Over overlay.",
+    "Ensure safe area is respected at all screen roots, except where the In-game HUD relies on the topmost edge, in which case use Safe Area padding explicitly for the absolute positioned pills."
+  ]
+}
