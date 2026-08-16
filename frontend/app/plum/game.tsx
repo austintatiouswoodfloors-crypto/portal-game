@@ -32,22 +32,17 @@ export default function Game() {
   const fieldRef = useRef<FieldHandle>(null);
   const scoreRef = useRef(0);
   const bestRef = useRef(0);
-  const sfxCoin = useAudioPlayer(require("@/assets/audio/coin.wav"));
+  const sfxCocoa = useAudioPlayer(require("@/assets/audio/cocoa.wav"));
+  const sfxSpwat = useAudioPlayer(require("@/assets/audio/spwat.wav"));
   const sfxDie = useAudioPlayer(require("@/assets/audio/die.wav"));
 
   const handleScore = useCallback((s: number) => {
     scoreRef.current = s;
     setScore(s);
-    try {
-      sfxCoin.seekTo(0);
-      sfxCoin.play();
-    } catch {
-      /* no-op */
-    }
     if (s === TURBO_SCORE) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
     }
-  }, [sfxCoin]);
+  }, []);
 
   const handleGameOver = useCallback((finalScore: number) => {
     const newBest = finalScore > bestRef.current;
@@ -126,8 +121,20 @@ export default function Game() {
       <View style={styles.playZone}>
         <FallingField ref={fieldRef} onScore={handleScore} onGameOver={handleGameOver} />
         <View style={[styles.buttons, { bottom: insets.bottom + 20 }]}>
-          <FruitButton type="peach" onPress={() => fieldRef.current?.press("peach")} />
-          <FruitButton type="plum" onPress={() => fieldRef.current?.press("plum")} />
+          <FruitButton
+            type="peach"
+            onPress={() => {
+              try { sfxCocoa.seekTo(0); sfxCocoa.play(); } catch { /* no-op */ }
+              fieldRef.current?.press("peach");
+            }}
+          />
+          <FruitButton
+            type="plum"
+            onPress={() => {
+              try { sfxSpwat.seekTo(0); sfxSpwat.play(); } catch { /* no-op */ }
+              fieldRef.current?.press("plum");
+            }}
+          />
         </View>
       </View>
 

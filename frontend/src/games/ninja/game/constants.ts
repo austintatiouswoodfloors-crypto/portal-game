@@ -16,6 +16,7 @@ export const RUN_ACCEL = 1.5;
 
 export const GROUND_FACTOR = 0.78; // ground surface as fraction of H
 export const UPPER_OFFSET = 130; // second platform tier height above ground
+export const UPPER_OFFSET2 = 250; // third (highest) platform tier
 
 export const GROW_MS = 6500;
 export const INVIS_MS = 6000;

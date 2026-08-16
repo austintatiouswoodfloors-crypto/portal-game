@@ -27,6 +27,7 @@ import {
   STAR_MS,
   STARS_PER_LIFE,
   UPPER_OFFSET,
+  UPPER_OFFSET2,
 } from "./constants";
 
 export type GameStatus = "playing" | "dead";
@@ -225,18 +226,18 @@ function generateAhead(s: GameState) {
     let gap: number;
     let forceUpper = false;
     let heavyUpper = false;
-    if (roll < 0.6) {
-      gap = chance(0.82) ? rand(48, Math.max(64, maxJumpGap)) : 0;
-    } else if (roll < 0.84) {
+    if (roll < 0.5) {
+      gap = rand(70, Math.max(96, maxJumpGap)); // always a real hop
+    } else if (roll < 0.8) {
       gap = maxJumpGap * rand(1.7, 2.1); // ~double — needs the upper tier
       forceUpper = true;
     } else {
-      gap = maxJumpGap * rand(2.4, 3.1); // ~triple — definitely the upper tier
+      gap = maxJumpGap * rand(2.4, 3.2); // ~triple — definitely the upper tier
       forceUpper = true;
       heavyUpper = true;
     }
 
-    const platLen = rand(180, 320);
+    const platLen = rand(120, 220);
     const x0 = s.nextX + gap;
     const x1 = x0 + platLen;
     s.ground.push({ x0, x1 });
@@ -252,6 +253,14 @@ function generateAhead(s: GameState) {
       const bux1 = x0 + platLen * (heavyUpper ? 0.75 : 0.5);
       s.platforms.push({ id: s.nextId++, x0: bux0, x1: bux1, y: uy });
       collectibleTrail(s, bux0 + 24, bux1 - 24, uy);
+      // Third (highest) tier over the toughest gaps — a real 3-level climb.
+      if (heavyUpper && chance(0.6)) {
+        const t3x0 = bux0 + 50;
+        const t3x1 = t3x0 + rand(90, 150);
+        const uy3 = s.groundTopY - UPPER_OFFSET2;
+        s.platforms.push({ id: s.nextId++, x0: t3x0, x1: t3x1, y: uy3 });
+        collectibleTrail(s, t3x0 + 20, t3x1 - 20, uy3);
+      }
     } else if (chance(0.4)) {
       // Second tier platform (sometimes) with its own trail.
       const uw = rand(120, 210);

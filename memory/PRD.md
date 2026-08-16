@@ -39,8 +39,14 @@ All three games feed the hub Ranking tab (per-game boards):
 - [x] Nailing: NORMAL/HARD title toggle (Hard = 6 nails + tighter perfect/good radii); rebuilt + recopied to public/nailing.
 
 ## Remaining / partial (backlog)
-- Ninja: layered/adaptive music that intensifies over a run (only on/off split done so far).
-- Ninja: an additional NEW enemy type (already ships walker/spiker/flyer); optional jump-arc guide.
-- Ninja: sometimes fully replace the lower tier with the upper for a stretch (currently a bridge over big gaps).
+- Ninja: per-effect mute toggles (jump/coin/power separately) — currently one master "Sound Effects" toggle + separate "Music".
+- Ninja: layered/adaptive music that intensifies over a run.
+- Ninja: optional jump-arc guide.
+
+## Iteration 4 (2026-06)
+- [x] Nailing: hit sparks now burst from the actual nail head (NailBoard Sparks `top` = head y); rebuilt to public/nailing.
+- [x] Plum: satisfying SFX — "cocoa" pop on Peach, "spwat" splat on Plum (synthesized WAVs in assets/audio, wired to buttons).
+- [x] Ninja: fewer/shorter platforms + wider gaps (more mandatory hopping); added a 3rd platform tier (UPPER_OFFSET2) over the toughest gaps.
+- [x] Ninja: jump sound confirmed (event 'jump' -> flap.wav) and mutable via the Sound Effects toggle.
 
 ## Remaining requested (backlog)
