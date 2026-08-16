@@ -35,7 +35,7 @@ const HOME_BG =
 export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { settings, setHaptics, setSound } = useSettings();
+  const { settings, setHaptics, setSound, setMusic } = useSettings();
   const [showSettings, setShowSettings] = useState(false);
   const [best, setBest] = useState(0);
   const [lives, setLives] = useState(0);
@@ -148,6 +148,7 @@ export default function Home() {
         onClose={() => setShowSettings(false)}
         onToggleHaptics={setHaptics}
         onToggleSound={setSound}
+        onToggleMusic={setMusic}
         onReset={reset}
       />
     </View>

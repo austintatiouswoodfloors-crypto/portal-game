@@ -23,6 +23,7 @@ interface Props {
   onClose: () => void;
   onToggleHaptics: (v: boolean) => void;
   onToggleSound: (v: boolean) => void;
+  onToggleMusic: (v: boolean) => void;
   onReset: () => void;
 }
 
@@ -32,6 +33,7 @@ export function SettingsSheet({
   onClose,
   onToggleHaptics,
   onToggleSound,
+  onToggleMusic,
   onReset,
 }: Props) {
   const insets = useSafeAreaInsets();
@@ -75,14 +77,30 @@ export function SettingsSheet({
 
           <View style={styles.row}>
             <View style={styles.iconBox}>
-              <Ionicons name="musical-notes-outline" size={20} color={colors.onBrandTertiary} />
+              <Ionicons name="volume-high-outline" size={20} color={colors.onBrandTertiary} />
             </View>
-            <Text style={styles.rowLabel}>Sound & Music</Text>
+            <Text style={styles.rowLabel}>Sound Effects</Text>
             <View style={{ marginLeft: "auto" }}>
               <Switch
                 testID="settings-sound-switch"
                 value={settings.sound}
                 onValueChange={onToggleSound}
+                trackColor={{ true: colors.brand, false: colors.border }}
+                thumbColor="#FFFFFF"
+              />
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.iconBox}>
+              <Ionicons name="musical-notes-outline" size={20} color={colors.onBrandTertiary} />
+            </View>
+            <Text style={styles.rowLabel}>Music</Text>
+            <View style={{ marginLeft: "auto" }}>
+              <Switch
+                testID="settings-music-switch"
+                value={settings.music}
+                onValueChange={onToggleMusic}
                 trackColor={{ true: colors.brand, false: colors.border }}
                 thumbColor="#FFFFFF"
               />

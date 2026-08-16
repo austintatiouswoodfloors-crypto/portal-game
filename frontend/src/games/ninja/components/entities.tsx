@@ -117,7 +117,7 @@ const POWER_STYLE: Record<
   { bg: string; icon: keyof typeof Ionicons.glyphMap }
 > = {
   grow: { bg: colors.powerUp, icon: "expand" },
-  star: { bg: colors.warning, icon: "star" },
+  star: { bg: "#8B5CF6", icon: "sparkles" },
   invis: { bg: colors.info, icon: "eye-off" },
   magnet: { bg: "#DB2777", icon: "magnet" },
 };

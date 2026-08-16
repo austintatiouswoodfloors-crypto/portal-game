@@ -38,3 +38,4 @@ export const KEY_BEST = "tn_best_coins"; // high score = best coins in a run
 export const KEY_LIVES = "tn_lives"; // saved indefinitely
 export const KEY_HAPTICS = "tn_haptics";
 export const KEY_SOUND = "tn_sound";
+export const KEY_MUSIC = "tn_music";

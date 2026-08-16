@@ -114,13 +114,14 @@ export default function Game() {
     }
   }, []);
 
-  // Background music loop.
+  // Background music loop (separate from sound effects).
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
     try {
       music.loop = true;
       music.volume = 0.4;
-      if (settings.sound) music.play();
+      if (settings.music) music.play();
+      else music.pause();
     } catch {
       // ignore
     }
@@ -131,7 +132,7 @@ export default function Game() {
         // ignore
       }
     };
-  }, [music, settings.sound]);
+  }, [music, settings.music]);
 
   useEffect(() => {
     hapticsRef.current = settings.haptics;

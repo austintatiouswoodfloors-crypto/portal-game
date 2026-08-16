@@ -33,8 +33,14 @@ All three games feed the hub Ranking tab (per-game boards):
 - [x] Return-to-hub button on all 3 games; removed CLOBA branding (Plum kicker -> "ARCADE", Nailing footer).
 - [x] Plum: auto-saves score to ranking on game over + correct/wrong sound effects (expo-audio).
 - [x] Nailing: device vibrates after every completed set (RN message bridge).
+- [x] Ninja: world-gen now produces occasional double/triple gaps with a bridging upper platform (forced hop-up); engine.ts generateAhead.
+- [x] Ninja: separate Music (settings.music) vs Sound Effects (settings.sound) toggles; new KEY_MUSIC.
+- [x] Ninja: coin-combo bonus (quick pickups grant bonus coins); power-up star restyled to purple "sparkles" to differ from gold life star.
+- [x] Nailing: NORMAL/HARD title toggle (Hard = 6 nails + tighter perfect/good radii); rebuilt + recopied to public/nailing.
+
+## Remaining / partial (backlog)
+- Ninja: layered/adaptive music that intensifies over a run (only on/off split done so far).
+- Ninja: an additional NEW enemy type (already ships walker/spiker/flyer); optional jump-arc guide.
+- Ninja: sometimes fully replace the lower tier with the upper for a stretch (currently a bridge over big gaps).
 
 ## Remaining requested (backlog)
-- Ninja: platform variety — sometimes 2x/3x gaps forcing a jump to an upper level; lower level replaced by upper (not overlapping).
-- Ninja: separate Music on/off from SFX; add music layers; enemy variety; coin combo; distinct collectible star vs life-progress star; optional jump-arc guide.
-- Nailing: "tougher nails" difficulty setting (edit web source GAME config + rebuild).

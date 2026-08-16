@@ -90,6 +90,8 @@ export interface GameState {
   nextX: number;
   runSpeed: number;
   coinsCollected: number;
+  combo: number;
+  comboUntil: number;
   stars: number;
   growUntil: number;
   invisUntil: number;
@@ -216,7 +218,24 @@ function generateAhead(s: GameState) {
     const diff = s.ninja.worldX;
     const airtime = (2 * JUMP_V) / GRAVITY;
     const maxJumpGap = Math.min(150, s.runSpeed * airtime * 0.85);
-    const gap = chance(0.72) ? rand(48, Math.max(64, maxJumpGap)) : 0;
+
+    // Gap size: mostly normal, but sometimes double or triple the jumpable
+    // width, which forces the player up onto the second tier to keep going.
+    const roll = Math.random();
+    let gap: number;
+    let forceUpper = false;
+    let heavyUpper = false;
+    if (roll < 0.6) {
+      gap = chance(0.82) ? rand(48, Math.max(64, maxJumpGap)) : 0;
+    } else if (roll < 0.84) {
+      gap = maxJumpGap * rand(1.7, 2.1); // ~double — needs the upper tier
+      forceUpper = true;
+    } else {
+      gap = maxJumpGap * rand(2.4, 3.1); // ~triple — definitely the upper tier
+      forceUpper = true;
+      heavyUpper = true;
+    }
+
     const platLen = rand(180, 320);
     const x0 = s.nextX + gap;
     const x1 = x0 + platLen;
@@ -225,11 +244,18 @@ function generateAhead(s: GameState) {
     // Spread collectibles on the lower tier.
     collectibleTrail(s, x0, x1, s.groundTopY);
 
-    // Second tier platform (sometimes) with its own trail.
-    if (chance(0.4)) {
+    const uy = s.groundTopY - UPPER_OFFSET;
+    if (forceUpper) {
+      // Bridge the wide gap with an upper platform: hop up from the previous
+      // ground, run across the top, then drop back down after the gap.
+      const bux0 = s.nextX - 30;
+      const bux1 = x0 + platLen * (heavyUpper ? 0.75 : 0.5);
+      s.platforms.push({ id: s.nextId++, x0: bux0, x1: bux1, y: uy });
+      collectibleTrail(s, bux0 + 24, bux1 - 24, uy);
+    } else if (chance(0.4)) {
+      // Second tier platform (sometimes) with its own trail.
       const uw = rand(120, 210);
       const ux0 = rand(x0 + 10, Math.max(x0 + 10, x1 - uw - 10));
-      const uy = s.groundTopY - UPPER_OFFSET;
       s.platforms.push({ id: s.nextId++, x0: ux0, x1: ux0 + uw, y: uy });
       collectibleTrail(s, ux0, ux0 + uw, uy);
     }
@@ -272,6 +298,8 @@ export function createGame(W: number, H: number): GameState {
     nextX: W * 0.95,
     runSpeed: RUN_START,
     coinsCollected: 0,
+    combo: 0,
+    comboUntil: 0,
     stars: 0,
     growUntil: 0,
     invisUntil: 0,
@@ -471,8 +499,14 @@ export function step(s: GameState, dt: number, input: Input) {
       Math.abs(ny - c.y) < COIN_R + nh * 0.45
     ) {
       s.coins.splice(i, 1);
-      s.coinsCollected += 1;
+      // Coin combo: quick successive pickups build a multiplier and bonus coins.
+      if (s.now <= s.comboUntil) s.combo += 1;
+      else s.combo = 1;
+      s.comboUntil = s.now + 1400;
+      const bonus = s.combo >= 3 ? Math.min(4, Math.floor(s.combo / 3) + 1) : 0;
+      s.coinsCollected += 1 + bonus;
       s.events.push("coin");
+      if (bonus > 0) s.events.push("combo");
     }
   }
 
