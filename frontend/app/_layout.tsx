@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { LogBox } from "react-native";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useIconFonts } from "@/src/hooks/use-icon-fonts";
 
@@ -20,8 +22,11 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [iconsLoaded, iconError] = useIconFonts();
   const [fontsLoaded, fontError] = useFonts({
-    Fredoka: require("../assets/fonts/Fredoka-SemiBold.ttf"),
+    Fredoka: require("../assets/fonts/Fredoka-Medium.ttf"),
+    "Fredoka-Medium": require("../assets/fonts/Fredoka-Medium.ttf"),
+    "Fredoka-SemiBold": require("../assets/fonts/Fredoka-SemiBold.ttf"),
     Nunito: require("../assets/fonts/Nunito-Regular.ttf"),
+    "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
   });
 
   const ready = (iconsLoaded || iconError) && (fontsLoaded || fontError);
@@ -37,14 +42,11 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <>
-      <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="game/nailing" options={{ animation: "fade" }} />
-        <Stack.Screen name="game/plum" options={{ animation: "fade" }} />
-        <Stack.Screen name="game/ninja" options={{ animation: "fade" }} />
-      </Stack>
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar style="dark" />
+        <Stack screenOptions={{ headerShown: false }} />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

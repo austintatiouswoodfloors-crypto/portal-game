@@ -43,7 +43,9 @@ export default function HubHome() {
 
   const openGame = (g: GameMeta) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/game/${g.key}` as never);
+    const route =
+      g.key === "nailing" ? "/game/nailing" : g.key === "plum" ? "/plum" : "/ninja";
+    router.push(route as never);
   };
 
   const saveName = async () => {

@@ -1,47 +1,40 @@
 # CLOBA Arcade — PRD
 
 ## Original Problem Statement
-User had three separate arcade games (their own apps) and wanted them combined into ONE app
-with a single home screen to choose which game to play.
+Combine the user's three existing arcade games into ONE app with a single home screen
+to choose which to play. The rebuilt-from-observation versions weren't faithful, so the
+user provided the real GitHub repos to import the actual games.
 
-Source games:
-1. Nailing Master — drag a hammer, swing down onto standing nails to drive them flush.
-2. Plum Peach — falling fruit stream; tap the Peach/Plum button matching the lowest fruit.
-3. TinyNinja Jumper — sky/green-platform runner; tap to hop, hold to jump, dodge enemies, grab coins.
+Source repos (user-owned):
+- Nailing Master  -> github.com/austintatiouswoodfloors-crypto/Hammerexp  (React web / CRA)
+- Plum Peach      -> github.com/austintatiouswoodfloors-crypto/PeachPlum  (Expo/React Native)
+- TinyNinja Jumper-> github.com/austintatiouswoodfloors-crypto/Tiny-Ninja-Jumper (Expo/RN)
 
-## Architecture
-- Frontend: Expo Router (SDK 54), bottom tabs (Arcade hub + Ranking).
-  - Hub: `app/(tabs)/index.tsx` — 3 game cards + editable player name.
-  - Leaderboard: `app/(tabs)/leaderboard.tsx` — per-game global ranking.
-  - Games: `app/game/nailing.tsx`, `plum.tsx`, `ninja.tsx` (each: unified start screen → play → game-over).
-  - Shared: `src/components/{ChunkyButton,StatPill,GameStart,GameOverOverlay,HowToPlayModal}`,
-    `src/hooks/{useGameLoop,useGameSession}`, `src/theme.ts`, `src/api.ts`, `src/player.ts`.
-  - Custom fonts: Fredoka (display), Nunito (text) via expo-font.
-  - Game loop: requestAnimationFrame (`useGameLoop`) with ref-based state + tick re-render.
-- Backend: FastAPI + MongoDB (`server.py`).
-  - POST /api/scores {game, player, score} → {best, rank, is_new_best} (best-per-player upsert).
-  - GET /api/leaderboard/{game}?limit=50 → sorted rows.
-- Storage: best scores + player name on-device via `@/src/utils/storage`.
-
-## User Personas
-- Casual mobile gamer who wants quick pick-up-and-play arcade sessions and to compete on rankings.
-
-## Core Requirements (static)
-- One hub to launch all 3 games.
-- Faithful gameplay for each of the 3 games.
-- On-device best scores + global leaderboard per game.
-- Playful, tactile arcade UI; haptics.
+## Architecture (current)
+- CLOBA Arcade hub = Expo Router app. Bottom tabs: Arcade (launcher) + Ranking.
+  - Hub: `app/(tabs)/index.tsx` — 3 cards. nailing -> /game/nailing, plum -> /plum, ninja -> /ninja.
+- Plum Peach (native import): real source in `src/games/plum/*`; screens in `app/plum/*`
+  (index/game/howto/ranking). api rewired to hub backend (`src/games/plum/api.ts` -> /api/scores game:'plum').
+- TinyNinja Jumper (native import): real source in `src/games/ninja/*` (game engine, components, theme);
+  screens in `app/ninja/*` (index/game). Uses expo-audio, expo-screen-orientation, react-native-svg.
+  Assets copied to `assets/fonts/*` and `assets/audio/*`.
+- Nailing Master (web app): runs the real build in a WebView.
+  - Native: `app/game/nailing.tsx` (react-native-webview) -> live URL.
+  - Web preview: `app/game/nailing.web.tsx` (raw <iframe>).
+- Root `app/_layout.tsx`: loads Fredoka/Fredoka-Medium/Fredoka-SemiBold/Nunito/Nunito-Bold,
+  GestureHandlerRootView + SafeAreaProvider.
+- Backend `server.py`: POST /api/scores {game,player,score}; GET /api/leaderboard/{game}.
 
 ## Implemented (2026-06)
-- [x] Arcade hub with 3 themed game cards + editable player name.
-- [x] Nailing Master: drag-hammer mechanic, 4 nails, TAPS counter, timer, endless boards, perfect-hit combo.
-- [x] Plum Peach: falling fruit stream, Peach/Plum buttons, catch line, speed ramp + TURBO at 200, wrong/miss = game over.
-- [x] TinyNinja Jumper: platform gaps, tap-hop/hold-jump physics, coins, red enemies, 3 hearts, stars.
-- [x] Global leaderboard (per game) + on-device best; end-to-end score submission.
-- [x] Backend API (14/14 backend tests pass); full frontend flows verified.
+- [x] Hub launches all 3 games; player name editable on device.
+- [x] Plum Peach — genuine imported game (falling fruit stream, Peach/Plum buttons, catch line, TURBO).
+- [x] TinyNinja Jumper — genuine imported game (platform gaps, hop/hold jump, coins, enemies, lives, powerups, audio).
+- [x] Nailing Master — genuine web game embedded via WebView/iframe.
+- [x] Plum scores feed the hub Ranking tab.
 
-## Backlog / Next
-- P1: Sound effects (tap/hit/coin) toggle.
-- P2: Daily challenge / game-of-the-day on the hub.
-- P2: Per-game achievements / medals.
-- P3: Migrate shadow* props to boxShadow to silence RN-Web warnings.
+## Known notes / Backlog
+- Nailing Master loads its LIVE preview URL. For a fully self-contained/offline build, bundle its
+  CRA build into the app (or point to the user's deployed URL after they publish it). (P1)
+- Unify leaderboard: also submit Nailing & Ninja scores to the hub backend so the Ranking tab
+  covers all three (currently Plum only). (P1)
+- Old rebuilt native games removed (app/game/plum.tsx, app/game/ninja.tsx).
