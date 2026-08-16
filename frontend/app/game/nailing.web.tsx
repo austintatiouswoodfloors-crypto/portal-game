@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-// Web-only variant of the Nailing Master screen: render the real web build in
-// a raw <iframe> (react-native-webview has no web renderer). On native, the
-// sibling nailing.tsx (react-native-webview) is used instead.
-const NAILING_URL =
-  "https://nail-master-game.preview.emergentagent.com/?utm_source=cloba-hub";
+import { getPlayerName } from "@/src/player";
+
+// Real Nailing Master web build, served from this app's public/ folder.
+const NAILING_URL = `${process.env.EXPO_PUBLIC_BACKEND_URL}/nailing/index.html`;
+
+function nailScore(taps: number, stars: number) {
+  return Math.max(1, 300 - (taps || 0)) + (stars || 0) * 20;
+}
+
+async function submit(taps: number, stars: number) {
+  try {
+    const name = await getPlayerName();
+    await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/scores`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ game: "nailing", player: name, score: nailScore(taps, stars) }),
+    });
+  } catch {
+    /* offline play still works */
+  }
+}
 
 export default function NailingWeb() {
   const router = useRouter();
+
+  useEffect(() => {
+    const handler = (ev: MessageEvent) => {
+      try {
+        const d = typeof ev.data === "string" ? JSON.parse(ev.data) : ev.data;
+        if (d && d.type === "nailing_score") submit(d.taps, d.stars);
+      } catch {
+        /* ignore */
+      }
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("message", handler);
+      return () => window.removeEventListener("message", handler);
+    }
+  }, []);
+
   return (
     <>
       {React.createElement("iframe", {

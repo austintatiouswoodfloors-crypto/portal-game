@@ -1,53 +1,68 @@
-import React, { useRef, useState } from "react";
-import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
-import { WebView } from "react-native-webview";
+import React, { useState } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { WebView, WebViewMessageEvent } from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
 import { COLORS, RADIUS } from "@/src/theme";
+import { getPlayerName } from "@/src/player";
 
-// Nailing Master is the original React web build — run it inside a WebView so
-// the gameplay is 100% the real app.
-const NAILING_URL = "https://nail-master-game.preview.emergentagent.com/?utm_source=cloba-hub";
+// Real Nailing Master web build, shipped inside this app's public/ folder and
+// served from the app origin (self-contained — no external live link).
+const NAILING_URL = `${process.env.EXPO_PUBLIC_BACKEND_URL}/nailing/index.html`;
+
+function nailScore(taps: number, stars: number) {
+  return Math.max(1, 300 - (taps || 0)) + (stars || 0) * 20;
+}
+
+async function submit(taps: number, stars: number) {
+  try {
+    const name = await getPlayerName();
+    await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/scores`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ game: "nailing", player: name, score: nailScore(taps, stars) }),
+    });
+  } catch {
+    /* offline play still works */
+  }
+}
 
 export default function NailingWebGame() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(true);
-  const webRef = useRef<WebView>(null);
+
+  const onMessage = (e: WebViewMessageEvent) => {
+    try {
+      const d = JSON.parse(e.nativeEvent.data);
+      if (d && d.type === "nailing_score") submit(d.taps, d.stars);
+    } catch {
+      /* ignore non-JSON messages */
+    }
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      {Platform.OS === "web" ? (
-        // react-native-web renders WebView as an iframe
-        <WebView
-          source={{ uri: NAILING_URL }}
-          style={styles.web}
-          onLoadEnd={() => setLoading(false)}
-        />
-      ) : (
-        <WebView
-          ref={webRef}
-          source={{ uri: NAILING_URL }}
-          style={styles.web}
-          originWhitelist={["*"]}
-          javaScriptEnabled
-          domStorageEnabled
-          allowsInlineMediaPlayback
-          mediaPlaybackRequiresUserAction={false}
-          onLoadEnd={() => setLoading(false)}
-        />
-      )}
-
+      <WebView
+        source={{ uri: NAILING_URL }}
+        originWhitelist={["*"]}
+        javaScriptEnabled
+        domStorageEnabled
+        allowsInlineMediaPlayback
+        mediaPlaybackRequiresUserAction={false}
+        onMessage={onMessage}
+        onLoadEnd={() => setLoading(false)}
+        style={styles.web}
+      />
       {loading ? (
         <View style={styles.loader} pointerEvents="none">
           <ActivityIndicator size="large" color={COLORS.brandSecondary} />
         </View>
       ) : null}
-
       <Pressable
         style={[styles.backBtn, { top: insets.top + 8 }]}
         onPress={() => router.back()}

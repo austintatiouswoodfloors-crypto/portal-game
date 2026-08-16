@@ -38,6 +38,7 @@ import {
 import { haptic } from "@/src/games/ninja/game/haptics";
 import { useSettings } from "@/src/games/ninja/game/useSettings";
 import { storage } from "@/src/utils/storage";
+import { getPlayerName } from "@/src/player";
 import { KEY_BEST, KEY_LIVES, STARS_PER_LIFE, WALTZ_BEAT_MS } from "@/src/games/ninja/game/constants";
 
 type Screen = "playing" | "paused" | "dead";
@@ -177,6 +178,16 @@ export default function Game() {
     if (isBest) await storage.setItem(KEY_BEST, coins);
     setBest(Math.max(prevBest, coins));
     setResult({ coins, isBest });
+    try {
+      const name = await getPlayerName();
+      fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/scores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ game: "ninja", player: name, score: coins }),
+      }).catch(() => {});
+    } catch {
+      /* no-op */
+    }
   }, []);
 
   const tick = useCallback(() => {
